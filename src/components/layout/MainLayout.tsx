@@ -3,10 +3,13 @@ const { Header, Content } = Layout;
 
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import { useAppDispatch } from "../../redux/hooks";
+import { logout } from "../../redux/features/auth/authSlice";
 
 const MainLayout = () => {
+  const dispatch = useAppDispatch();
   const handleLogout = () => {
-    console.log("logout");
+    dispatch(logout());
   };
 
   return (
@@ -14,7 +17,14 @@ const MainLayout = () => {
       <Layout style={{ height: "100vh" }}>
         <Sidebar />
         <Layout>
-          <Header style={{ padding: 0 }}>
+          <Header
+            style={{
+              padding: 0,
+              display: "flex",
+              justifyContent: "end",
+              alignItems: "center",
+            }}
+          >
             <Button onClick={handleLogout}>Logout</Button>
           </Header>
           <Content style={{ margin: "24px 16px 0" }}>
