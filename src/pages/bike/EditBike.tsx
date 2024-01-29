@@ -2,12 +2,21 @@ import { Button, Row } from "antd";
 import FormContainer from "../../components/form/FormContainer";
 import CustomizeInput from "../../components/form/CustomizeInput";
 import { FieldValues } from "react-hook-form";
-import { useAddBikeMutation } from "../../redux/features/bike/bikeApi";
-import { toast } from "sonner";
+import { useAppSelector } from "../../redux/hooks";
+import { selectOneBike } from "../../redux/features/bike/bikeSlice";
+import { useEditBikeMutation } from "../../redux/features/bike/bikeApi";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { IBike } from "./BikeDetails";
 
-const AddBike = () => {
-  const [addBike] = useAddBikeMutation();
+interface ICreateVariantBike extends IBike {
+  policyNumber?: number;
+  expirationDate?: string;
+}
+
+const EditBike = () => {
+  const bike: IBike | null = useAppSelector(selectOneBike);
+  const [update] = useEditBikeMutation();
   const navigate = useNavigate();
 
   const onSubmit = async (bikeData: FieldValues) => {
@@ -25,19 +34,27 @@ const AddBike = () => {
         };
       }
 
-      addBike({ ...bikeData, price, quantity, mileage, insurance });
-      toast.success("Bike added!");
+      const details = { ...bikeData, price, quantity, mileage, insurance };
+
+      update(details);
+      toast.success("Bike details updated");
       navigate("/");
-    } catch (error) {
-      toast.error("Something went wrong!");
+    } catch (err) {
+      toast.error("Update failed");
     }
+  };
+
+  const defaultValues: ICreateVariantBike = {
+    ...bike!,
+    policyNumber: bike!.insurance?.policyNumber,
+    expirationDate: bike!.insurance?.expirationDate,
   };
 
   return (
     <>
-      <h1>Add New Bike</h1>
+      <h1>Edit Bike Details</h1>
       <Row justify="center" align="middle" style={{ height: "100%" }}>
-        <FormContainer onSubmit={onSubmit}>
+        <FormContainer onSubmit={onSubmit} defaultValues={defaultValues}>
           <CustomizeInput type="text" name="name" label="Bike Name:" />
           <CustomizeInput type="number" name="price" label="Bike Price:" />
           <CustomizeInput
@@ -69,7 +86,7 @@ const AddBike = () => {
           />
 
           <Button htmlType="submit" type="primary">
-            Add Bike
+            Save
           </Button>
         </FormContainer>
       </Row>
@@ -77,4 +94,4 @@ const AddBike = () => {
   );
 };
 
-export default AddBike;
+export default EditBike;

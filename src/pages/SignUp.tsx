@@ -50,9 +50,9 @@ const SignUp = () => {
             label="Confirm Password:"
           />
 
-          <CustomizeInput type="address" name="address" label="Address:" />
+          <CustomizeInput type="text" name="address" label="Address:" />
 
-          <CustomizeInput type="contact" name="contact" label="Contact:" />
+          <CustomizeInput type="text" name="contact" label="Contact:" />
 
           <div style={{ margin: "15px 0" }}>
             <p
