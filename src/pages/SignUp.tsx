@@ -2,12 +2,36 @@ import { Button, Row } from "antd";
 import FormContainer from "../components/form/FormContainer";
 import CustomizeInput from "../components/form/CustomizeInput";
 import { useNavigate } from "react-router-dom";
+import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
+import { useSignupMutation } from "../redux/features/auth/authApi";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [signup] = useSignupMutation();
 
-  const onSubmit = () => {
-    console.log("ok");
+  const onSubmit = (info: FieldValues) => {
+    const loadingToastId = toast.loading("Signup in proccess! Please wait");
+    try {
+      if (info.password === info.confirmPassword) {
+        signup(info);
+        toast.success("SignUp successfully!", {
+          id: loadingToastId,
+        });
+        navigate("/user/signin");
+      } else {
+        toast.error(
+          "Password and confirm password does not match! Please try again",
+          {
+            id: loadingToastId,
+          }
+        );
+      }
+    } catch (error) {
+      toast.error("Something went wrong! Please try again", {
+        id: loadingToastId,
+      });
+    }
   };
 
   return (

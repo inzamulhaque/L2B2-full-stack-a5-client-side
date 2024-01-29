@@ -10,7 +10,7 @@ import { RootState } from "../store";
 import { logout, setUser } from "../features/auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://bike-management-dashboard-server.vercel.app/api/v1",
+  baseUrl: "http://localhost:7000/api/v1",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
@@ -27,6 +27,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
   FetchArgs,
   BaseQueryApi,
   DefinitionType
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 > = async (args, api, extraOptions): Promise<any> => {
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 401) {
